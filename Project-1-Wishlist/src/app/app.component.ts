@@ -4,6 +4,12 @@ import { wishItem } from '../shared/models/wishItem';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
+const filters = [
+  (item: wishItem) => item,
+  (item: wishItem) => item.isComplete,
+  (item: wishItem) => !item.isComplete,
+];
+
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -13,42 +19,25 @@ import { FormsModule } from '@angular/forms';
 })
 export class AppComponent {
   items: wishItem[] = [
-    // new wishItem('$100,000,000,000,000', true),
-    // new wishItem('Learn Angular', true),
-    // new wishItem('Build an app', true),
-    // new wishItem('Share my knowledge', true),
-    // new wishItem('Try out new hobbies', true),
+    new wishItem('Learn Angular'),
+    new wishItem('Get Coffee', true),
+    new wishItem('Find grass that cuts itself'),
   ];
 
-  title = 'my wishlist';
-  newWishText = '';
-  listFilter: string = '';
+  listFilter: any = '0';
+
+  newWishText: string = '';
+
+  title: string = 'wishlist';
+
+  get visibleItems(): wishItem[] {
+    return this.items.filter(filters[this.listFilter]);
+  }
 
   addNewWish() {
     this.items.push(new wishItem(this.newWishText));
+    this.newWishText = '';
   }
-
-  get visibleItems(): wishItem[] {
-    let value = this.listFilter;
-
-    if (value === '0') {
-      return this.items;
-    } else if (value === '1') {
-      return this.items.filter((item) => item.isComplete);
-    } else {
-      return this.items.filter((item) => !item.isComplete);
-    }
-  }
-
-  // filterChanged(value: any) {
-  //   if (value === '0') {
-  //     this.visibleItems = this.items;
-  //   } else if (value === '1') {
-  //     this.visibleItems = this.items.filter((item) => item.isComplete);
-  //   } else {
-  //     this.visibleItems = this.items.filter((item) => !item.isComplete);
-  //   }
-  // }
 
   toggleItem(item: wishItem) {
     item.isComplete = !item.isComplete;
